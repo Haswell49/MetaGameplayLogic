@@ -1,8 +1,10 @@
-import numbers
 import typing
 
+from src.server.db.formatters import abstract
 
-class SQLiteFormatter:
+
+# TODO: Add an base class for this class
+class SQLiteFormatter(abstract.SQLFormatter):
     def insert(self, table_name: str, data: dict):
         str_columns = ", ".join(data.keys())
         str_values = ", ".join(self._format_insertion_values(data.values()))
@@ -31,6 +33,11 @@ class SQLiteFormatter:
         item_id = self._format_value(item_id)
 
         return f"DELETE FROM {table_name} WHERE id={item_id};"
+
+    def create_table(self, table_name: str, schema: dict):
+        formatted_schema = ",".join(f"{key} {value}" for key, value in schema.items())
+
+        return f"CREATE TABLE {table_name} ({formatted_schema});)"
 
     def _format_insertion_values(self, values: typing.Iterable):
         for value in values:

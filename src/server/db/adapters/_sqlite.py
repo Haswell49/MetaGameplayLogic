@@ -5,8 +5,8 @@ import aiosqlite
 from src.server.db.formatters import SQLiteFormatter
 
 
+# TODO: Add an base class for this class
 class SQLiteAsyncAdapter:
-    # TODO: Move all SQL-formatting code to src.server.db.formatters.SQLiteFormatter
     connection: aiosqlite.Connection
 
     formatter: SQLiteFormatter
