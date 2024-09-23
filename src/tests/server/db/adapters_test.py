@@ -6,31 +6,15 @@ import aiosqlite
 
 from src.server.db.adapters import SQLiteAsyncAdapter
 from src.server.db.formatters import SQLiteFormatter
+from src.tests.server.db.mixins import SQLiteAsyncDBSetupMixin
 
 
-class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase):
-    connection: aiosqlite.Connection
-
+class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncDBSetupMixin):
     adapter: SQLiteAsyncAdapter
 
     table_name = "users"
     data = {"id": 0,
             "name": "selim"}
-
-    def setUp(self):
-        async def wrapper():
-            try:
-                os.remove("test_db.sqlite3")
-            except FileNotFoundError:
-                pass
-
-            self.connection = await aiosqlite.connect("test_db.sqlite3")
-
-            formatter = SQLiteFormatter()
-
-            self.adapter = SQLiteAsyncAdapter(self.connection, formatter)
-
-        asyncio.run(wrapper())
 
     async def test_create(self):
         await self._reset_table()
@@ -82,18 +66,6 @@ class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase):
         result = await cursor.fetchone()
 
         self.assertEqual(result, None)
-
-    def tearDown(self):
-        asyncio.run(self.connection.close())
-
-    async def _reset_table(self):
-        await self.connection.execute(f"DROP TABLE IF EXISTS {self.table_name};")
-
-        await self.connection.execute(f"CREATE TABLE {self.table_name} ("
-                                      "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                                      "name TEXT UNIQUE NOT NULL);")
-
-        await self.connection.commit()
 
 
 if __name__ == "__main__":
