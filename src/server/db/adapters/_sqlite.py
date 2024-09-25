@@ -3,7 +3,7 @@ import typing
 import aiosqlite
 
 from ._exceptions import RowNotFoundException
-from src.server.db.formatters import SQLiteFormatter
+from ..formatters import SQLiteFormatter
 
 
 # TODO: Add an base class for this class

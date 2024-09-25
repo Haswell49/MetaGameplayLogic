@@ -1,7 +1,7 @@
 import typing
 
-from src.server.db.adapters import SQLiteAsyncAdapter
-from src.server.db import base
+from ..adapters import SQLiteAsyncAdapter
+from .. import base
 
 
 class SQLiteAsyncMapper:

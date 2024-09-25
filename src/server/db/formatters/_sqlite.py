@@ -1,6 +1,6 @@
 import typing
 
-from src.server.db.formatters import abstract
+from . import abstract
 
 
 # TODO: Add an base class for this class

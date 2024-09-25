@@ -1,7 +1,5 @@
 import typing
 
-from src.server.db.formatters import abstract
-
 
 class Model:
     # TODO: Add SQL type validation
