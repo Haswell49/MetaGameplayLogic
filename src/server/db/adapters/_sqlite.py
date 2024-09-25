@@ -2,6 +2,7 @@ import typing
 
 import aiosqlite
 
+from ._exceptions import RowNotFoundException
 from src.server.db.formatters import SQLiteFormatter
 
 
@@ -27,7 +28,12 @@ class SQLiteAsyncAdapter:
 
         cursor = await self.connection.execute(query)
 
-        return await cursor.fetchone()
+        data = await cursor.fetchone()
+
+        if not data:
+            raise RowNotFoundException(f"Row with primary key: {item_id} not found in table: {table_name}")
+
+        return data
 
     async def update(self, table_name: str, data: dict) -> None:
         query = self.formatter.update(table_name, data)
