@@ -1,1 +1,1 @@
-from _sqlite import SQLiteAsyncMapper
+from ._sqlite import SQLiteAsyncMapper

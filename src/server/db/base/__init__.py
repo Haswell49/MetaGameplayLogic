@@ -1,1 +1,1 @@
-from _models import Model
+from ._models import Model
