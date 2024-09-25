@@ -20,4 +20,4 @@ CREATE TABLE IF NOT EXISTS items
     price    INTEGER NOT NULL,
     owner_id INTEGER,
     FOREIGN KEY (owner_id) REFERENCES players (user_id)
-)
+);
