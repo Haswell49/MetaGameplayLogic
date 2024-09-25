@@ -18,7 +18,7 @@ class Model:
 
     @classmethod
     def get_fields(cls) -> typing.Generator[str, None, None]:
-        for field_name in cls.__dict__.keys():
+        for field_name in cls.__annotations__.keys():
             if not cls._is_data_field(field_name):
                 continue
 
@@ -50,18 +50,17 @@ class Model:
         pass
 
     def _setup_fields(self, data: dict):
-        for field_name, default_value in type(self).__dict__.items():
-            value = data.get(field_name, default_value)
+        for field_name, field_type in type(self).__annotations__.items():
+            if not self._is_data_field(field_name):
+                continue
 
+            value = data.get(field_name, field_type())
+
+            if type(value) is not field_type:
+                raise TypeError(f"Invalid value: '{value}' for field '{field_name}' (type: ({field_type})")
+
+            self._data[field_name] = value
             setattr(self, field_name, value)
-
-    def __setattr__(self, field_name: str, value):
-        super().__setattr__(field_name, value)
-
-        if not self._is_data_field(field_name):
-            return
-
-        self._data[field_name] = value
 
     def __eq__(self, other):
         if not isinstance(other, Model):
