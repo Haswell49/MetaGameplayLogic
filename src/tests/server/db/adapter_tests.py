@@ -6,32 +6,34 @@ import aiosqlite
 
 from src.server.db.adapters import SQLiteAsyncAdapter
 from src.server.db.formatters import SQLiteFormatter
-from src.tests.server.db.mixins import SQLiteAsyncDBSetupMixin
+from src.tests.server.db.mixins import SQLiteAsyncDBSetupMixin, SQLiteAsyncAdapterSetupMixin
 
 
-class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncDBSetupMixin):
+class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAdapterSetupMixin):
     adapter: SQLiteAsyncAdapter
 
     table_name = "users"
-    data = {"id": 0,
-            "name": "selim"}
+    data = {"id": 1,
+            "email": "test@gmail.com",
+            "password": "<PASSWORD>"}
+
+    def setUp(self):
+        SQLiteAsyncAdapterSetupMixin.setUp(self)
+
+        asyncio.run(self._reset_tables())
 
     async def test_create(self):
-        await self._reset_table()
-
         creation_data = {key: value for key, value in self.data.items() if key != "id"}
 
         await self.adapter.insert(self.table_name, creation_data)
 
-        cursor = await self.connection.execute(f"SELECT * FROM {self.table_name} WHERE name='{self.data['name']}'")
+        cursor = await self.connection.execute(f"SELECT * FROM {self.table_name} WHERE email='{self.data['email']}'")
 
         data_from_connector = await cursor.fetchone()
 
-        self.assertEqual(data_from_connector[1], self.data["name"])
+        self.assertEqual(data_from_connector, tuple(self.data.values()))
 
     async def test_select(self):
-        await self._reset_table()
-
         await self.adapter.insert(self.table_name, self.data)
 
         adapter_data = await self.adapter.select(self.table_name, self.data["id"])
@@ -42,21 +44,19 @@ class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncDB
         self.assertEqual(data_from_connector, adapter_data)
 
     async def test_update(self):
-        await self._reset_table()
-
         await self.adapter.insert(self.table_name, self.data)
 
-        new_name = "hello"
+        new_email = "hello@gmail.com"
 
-        await self.adapter.update(self.table_name, {"id": self.data["id"], "name": new_name})
+        await self.adapter.update(self.table_name, {"id": self.data["id"], "email": new_email})
 
         find_data = await self.adapter.select(self.table_name, self.data["id"])
 
-        self.assertEqual(find_data, (self.data["id"], new_name))
+        new_data = tuple(value if key != "email" else new_email for key, value in self.data.items())
+
+        self.assertEqual(find_data, new_data)
 
     async def test_delete(self):
-        await self._reset_table()
-
         await self.adapter.insert(self.table_name, self.data)
 
         await self.adapter.delete(self.table_name, self.data["id"])

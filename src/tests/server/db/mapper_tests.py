@@ -23,9 +23,9 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         self.mapper = SQLiteAsyncMapper(self.adapter, Item)
 
-    async def test_create(self):
-        await self._reset_table()
+        asyncio.run(self._reset_tables())
 
+    async def test_create(self):
         item = Item(id=0, name="Battleship", price=200)
 
         await self.mapper.create(item)
@@ -36,11 +36,9 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         test_item = Item(**test_item_data)
 
-        self.assertEquals(test_item, item)
+        self.assertEqual(test_item, item)
 
     async def test_select(self):
-        await self._reset_table()
-
         item = Item(id=0, name="Battleship", price=200)
 
         await self.mapper.create(item)
@@ -53,11 +51,9 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         test_item = Item(**test_item_data)
 
-        self.assertEquals(test_item, item)
+        self.assertEqual(test_item, item)
 
     async def test_update(self):
-        await self._reset_table()
-
         item = Item(id=0, name="Battleship", price=200)
 
         await self.mapper.create(item)
@@ -75,11 +71,9 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         test_item = Item(**test_item_data)
 
-        self.assertEquals(test_item, item)
+        self.assertEqual(test_item, item)
 
     async def test_delete(self):
-        await self._reset_table()
-
         item = Item(id=0, name="Battleship", price=200)
 
         await self.mapper.create(item)
@@ -92,20 +86,6 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
             return
 
         self.fail("Item was not deleted.")
-
-    async def _reset_table(self):
-        await self.connection.execute("DROP TABLE IF EXISTS items;")
-
-        await self.connection.execute("""CREATE TABLE IF NOT EXISTS items
-        (
-            id       INTEGER PRIMARY KEY AUTOINCREMENT,
-            name     TEXT    NOT NULL UNIQUE,
-            price    INTEGER NOT NULL,
-            owner_id INTEGER,
-            FOREIGN KEY (owner_id) REFERENCES players (user_id)
-        )""")
-
-        await self.connection.commit()
 
 
 if __name__ == '__main__':

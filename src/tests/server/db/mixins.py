@@ -1,4 +1,5 @@
 import asyncio
+import itertools
 import os
 
 import aiosqlite
@@ -26,12 +27,22 @@ class SQLiteAsyncDBSetupMixin:
     def tearDown(self):
         asyncio.run(self.connection.close())
 
-    async def _reset_table(self):
-        await self.connection.execute(f"DROP TABLE IF EXISTS {self.table_name};")
+        try:
+            os.remove("test_db.sqlite3")
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            pass
 
-        await self.connection.execute(f"CREATE TABLE {self.table_name} ("
-                                      "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                                      "name TEXT UNIQUE NOT NULL);")
+    async def _reset_tables(self):
+        drop_file = open("./src/server/db/sql/drop_tables.sql")
+        await self.connection.executescript(drop_file.read())
+
+        create_file = open("./src/server/db/sql/create_tables.sql")
+        await  self.connection.executescript(create_file.read())
+
+        drop_file.close()
+        create_file.close()
 
         await self.connection.commit()
 
