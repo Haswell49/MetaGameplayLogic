@@ -8,6 +8,7 @@ class Model:
 
     _data: dict[str, typing.Any]
 
+    # TODO: Solve this mess of static methods (might create a separate instance type for this)
     @classmethod
     def get_table_name(cls):
         if not cls._table_name:
@@ -49,7 +50,9 @@ class Model:
         pass
 
     def _setup_fields(self, data: dict):
-        for field_name, value in data.items():
+        for field_name, default_value in type(self).__dict__.items():
+            value = data.get(field_name, default_value)
+
             setattr(self, field_name, value)
 
     def __setattr__(self, field_name: str, value):
