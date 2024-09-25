@@ -15,6 +15,8 @@ class SQLiteAsyncDBSetupMixin:
             os.remove("test_db.sqlite3")
         except FileNotFoundError:
             pass
+        except PermissionError:
+            pass
 
         async def wrapper():
             self.connection = await aiosqlite.connect("test_db.sqlite3")
