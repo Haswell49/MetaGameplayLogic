@@ -1,9 +1,19 @@
 import abc
 import typing
 
+from .formatters import SQLFormatter
 
 
 class Adapter(abc.ABC):
+    @staticmethod
+    @abc.abstractmethod
+    def create_connection(db_config: dict) -> typing.Any:
+        pass
+
+    @abc.abstractmethod
+    def __init__(self, connection: typing.Any, formatter: SQLFormatter) -> None:
+        pass
+
     @abc.abstractmethod
     def insert(self, table_name: str, data: dict) -> None:
         pass
