@@ -30,7 +30,7 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         await self.mapper.create(item)
 
-        test_item_values = await self.adapter.select(Item.get_table_name(), item.id)
+        test_item_values = await self.adapter.select(Item.get_table_name(), **item.data)
 
         test_item_data = {key: value for key, value in zip(Item.get_fields(), test_item_values)}
 
@@ -43,9 +43,9 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         await self.mapper.create(item)
 
-        item = await self.mapper.select(0)
+        item = await self.mapper.select(id=0)
 
-        test_item_values = await self.adapter.select(Item.get_table_name(), item.id)
+        test_item_values = await self.adapter.select(Item.get_table_name(), id=item.id)
 
         test_item_data = {key: value for key, value in zip(Item.get_fields(), test_item_values)}
 
@@ -58,14 +58,14 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         await self.mapper.create(item)
 
-        item = await self.mapper.select(0)
+        item = await self.mapper.select(id=0)
 
         item.name = "SpeedBoat"
         item.price = 1000
 
         await self.mapper.update(item)
 
-        test_item_values = await self.adapter.select(Item.get_table_name(), item.id)
+        test_item_values = await self.adapter.select(Item.get_table_name(), id=item.id)
 
         test_item_data = {key: value for key, value in zip(Item.get_fields(), test_item_values)}
 
@@ -81,7 +81,7 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
         await self.mapper.delete(0)
 
         try:
-            await self.adapter.select(Item.get_table_name(), 0)
+            await self.adapter.select(Item.get_table_name(), id=item.id)
         except RowNotFoundException:
             return
 

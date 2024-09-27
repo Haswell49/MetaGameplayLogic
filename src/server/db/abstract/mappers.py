@@ -9,15 +9,15 @@ class Mapper(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create(self, model_instance: Model):
+    def create(self, instance: Model):
         pass
 
     @abc.abstractmethod
-    def select(self, instance_id: int | str):
+    def select(self, instance: Model):
         pass
 
     @abc.abstractmethod
-    def update(self, model_instance: Model):
+    def update(self, instance: Model):
         pass
 
     @abc.abstractmethod

@@ -19,7 +19,7 @@ class Adapter(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def select(self, table_name: str, item_id: typing.Any) -> tuple:
+    def select(self, table_name: str, **filters) -> tuple:
         pass
 
     @abc.abstractmethod

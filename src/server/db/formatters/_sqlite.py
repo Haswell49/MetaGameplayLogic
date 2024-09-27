@@ -7,25 +7,19 @@ from .. import abstract
 class SQLiteFormatter(abstract.SQLFormatter):
     def insert(self, table_name: str, data: dict):
         str_columns = ", ".join(data.keys())
-        str_values = ", ".join(self._format_insertion_values(data.values()))
+        str_values = ", ".join(self._format_query_values(data.values()))
 
         return f"INSERT INTO {table_name} ({str_columns}) VALUES ({str_values});"
 
-    def select(self, table_name: str, item_id: typing.Any):
-        item_id = self._format_value(item_id)
+    def select(self, table_name: str, data: dict):
+        str_filters = " AND ".join(self._format_equations(data.items()))
 
-        return f"SELECT * FROM {table_name} WHERE id={item_id};"
+        return f"SELECT * FROM {table_name} WHERE {str_filters};"
 
     def update(self, table_name: str, data: dict):
         row_id = data["id"]
 
-        assignments = set()
-
-        for key, value in data.items():
-            value = self._format_value(value)
-            assignments.add(f"{key}={value}")
-
-        str_assignments = ", ".join(assignments)
+        str_assignments = ", ".join(self._format_equations(data.items()))
 
         return f"UPDATE {table_name} SET {str_assignments} WHERE id = {row_id};"
 
@@ -39,9 +33,14 @@ class SQLiteFormatter(abstract.SQLFormatter):
 
         return f"CREATE TABLE {table_name} ({formatted_schema});)"
 
-    def _format_insertion_values(self, values: typing.Iterable):
+    def _format_query_values(self, values: typing.Iterable):
         for value in values:
             yield self._format_value(value)
+
+    def _format_equations(self, items: typing.ItemsView[str, typing.Any]):
+        for key, value in items:
+            value = self._format_value(value)
+            yield f"{key}={value}"
 
     def _format_value(self, value: typing.Any):
         if isinstance(value, str):

@@ -8,7 +8,7 @@ class SQLFormatter(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def select(self, table_name: str, item_id: typing.Any):
+    def select(self, table_name: str, data: dict):
         pass
 
     @abc.abstractmethod

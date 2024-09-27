@@ -27,17 +27,17 @@ class SQLiteAsyncAdapter(abstract.Adapter):
 
         await self.connection.commit()
 
-    async def select(self, table_name: str, item_id: typing.Any) -> tuple:
-        query = self.formatter.select(table_name, item_id)
+    async def select(self, table_name: str, **filters) -> tuple:
+        query = self.formatter.select(table_name, filters)
 
         cursor = await self.connection.execute(query)
 
-        data = await cursor.fetchone()
+        filters = await cursor.fetchone()
 
-        if not data:
-            raise RowNotFoundException(f"Row with primary key: {item_id} not found in table: {table_name}")
+        if not filters:
+            raise RowNotFoundException(f"Row with parameters: {filters} not found in table: {table_name}")
 
-        return data
+        return filters
 
     async def update(self, table_name: str, data: dict) -> None:
         query = self.formatter.update(table_name, data)
