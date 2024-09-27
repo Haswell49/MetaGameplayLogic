@@ -12,6 +12,10 @@ class SQLiteAsyncAdapter(abstract.Adapter):
 
     formatter: SQLiteFormatter
 
+    @staticmethod
+    async def create_connection(db_config: dict):
+        return await aiosqlite.connect(**db_config)
+
     def __init__(self, connection: aiosqlite.Connection, formatter: SQLiteFormatter):
         self.connection = connection
         self.formatter = formatter
