@@ -1,7 +1,7 @@
 from aiohttp import web
 
-from .views import LoginView
+from views import LoginView
 
 routes = [
-    web.get("/", LoginView.get),
+    web.view("/login/", LoginView)
 ]
