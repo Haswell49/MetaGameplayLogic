@@ -2,7 +2,7 @@ import pydantic
 
 
 class User(pydantic.BaseModel):
-    id: int
+    id: int | None
     email: pydantic.EmailStr
     password: str
 
