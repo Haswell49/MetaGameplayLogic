@@ -13,7 +13,7 @@ from urls import routes
 
 
 def init_app(host: str, port: int, db_adapter: db.abstract.Adapter,
-             db_mappers: dict[db.abstract.Model, db.abstract.Mapper], loop: asyncio.AbstractEventLoop = None):
+             db_mappers: dict[type[db.abstract.Model], db.abstract.Mapper], loop: asyncio.AbstractEventLoop = None):
     app = web.Application()
 
     app.db_adapter = db_adapter
