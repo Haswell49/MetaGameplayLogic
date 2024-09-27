@@ -4,10 +4,10 @@ import aiosqlite
 
 from ._exceptions import RowNotFoundException
 from ..formatters import SQLiteFormatter
+from .. import abstract
 
 
-# TODO: Add an base class for this class
-class SQLiteAsyncAdapter:
+class SQLiteAsyncAdapter(abstract.Adapter):
     connection: aiosqlite.Connection
 
     formatter: SQLiteFormatter

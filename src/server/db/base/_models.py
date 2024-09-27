@@ -1,14 +1,16 @@
 import typing
 
+from .. import abstract
 
-class Model:
+
+class Model(abstract.Model):
     # TODO: Add SQL type validation
 
     _table_name: str = ""
 
     _data: dict[str, typing.Any]
 
-    # TODO: Solve this mess of static methods (might create a separate instance type for this)
+    # TODO: Solve this mess of static methods (might need to create a separate instance type for this)
     @classmethod
     def get_table_name(cls):
         if not cls._table_name:
