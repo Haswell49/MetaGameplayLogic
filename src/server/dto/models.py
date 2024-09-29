@@ -1,17 +1,16 @@
 import pydantic
+from . import base
 
 
-class User(pydantic.BaseModel):
-    id: int | None
-    email: pydantic.EmailStr
-    password: str
+class User(base.BaseUser):
+    id: int | None = None
 
 
 class Item(pydantic.BaseModel):
     id: int
     name: str
     price: int
-    owner_id: int | None
+    owner_id: int | None = None
 
 
 class Player(pydantic.BaseModel):
