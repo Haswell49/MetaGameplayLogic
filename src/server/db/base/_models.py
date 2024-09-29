@@ -10,6 +10,9 @@ class Model(abstract.Model):
 
     _data: dict[str, typing.Any]
 
+    class DoesNotExist(Exception):
+        pass
+
     # TODO: Solve this mess of static methods (might need to create a separate instance type for this)
     @classmethod
     def get_table_name(cls):
