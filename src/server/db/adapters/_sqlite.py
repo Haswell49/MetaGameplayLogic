@@ -32,12 +32,12 @@ class SQLiteAsyncAdapter(abstract.Adapter):
 
         cursor = await self.connection.execute(query)
 
-        filters = await cursor.fetchone()
+        data = await cursor.fetchone()
 
-        if not filters:
-            raise RowNotFoundException(f"Row with parameters: {filters} not found in table: {table_name}")
+        if not data:
+            raise RowNotFoundException(f"Row with parameters: {data} not found in table: {table_name}")
 
-        return filters
+        return data
 
     async def update(self, table_name: str, data: dict) -> None:
         query = self.formatter.update(table_name, data)
