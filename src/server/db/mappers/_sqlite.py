@@ -1,6 +1,7 @@
 import typing
 
 from .. import base, abstract
+from .. import adapters
 
 
 class SQLiteAsyncMapper(abstract.Mapper):
@@ -15,8 +16,11 @@ class SQLiteAsyncMapper(abstract.Mapper):
     async def create(self, instance: base.Model):
         await self.adapter.insert(self._model_type.get_table_name(), instance.data)
 
-    async def select(self, **filters):
-        values = await self.adapter.select(self._model_type.get_table_name(), **filters)
+    async def select(self, instance: base.Model):
+        try:
+            values = await self.adapter.select(self._model_type.get_table_name(), **instance.data)
+        except adapters.RowNotFoundException:
+            raise self._model_type.DoesNotExist
 
         data = {key: value for key, value in zip(self._model_type.get_fields(), values)}
 
