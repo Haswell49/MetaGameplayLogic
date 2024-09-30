@@ -5,6 +5,10 @@ from .formatters import SQLFormatter
 
 
 class Adapter(abc.ABC):
+    connection: typing.Any
+
+    formatter: SQLFormatter
+
     @staticmethod
     @abc.abstractmethod
     def create_connection(db_config: dict) -> typing.Any:
@@ -15,17 +19,17 @@ class Adapter(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def insert(self, table_name: str, data: dict) -> None:
+    async def insert(self, table_name: str, data: dict) -> int | str:
         pass
 
     @abc.abstractmethod
-    def select(self, table_name: str, **filters) -> tuple:
+    async def select(self, table_name: str, **filters) -> tuple:
         pass
 
     @abc.abstractmethod
-    def update(self, table_name: str, data: dict) -> None:
+    async def update(self, table_name: str, data: dict) -> None:
         pass
 
     @abc.abstractmethod
-    def delete(self, table_name: str, item_id: typing.Any) -> None:
+    async def delete(self, table_name: str, item_id: typing.Any) -> None:
         pass

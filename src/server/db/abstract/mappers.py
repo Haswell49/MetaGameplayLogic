@@ -9,17 +9,17 @@ class Mapper(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create(self, instance: Model):
+    async def create(self, instance: Model):
         pass
 
     @abc.abstractmethod
-    def select(self, instance: Model):
+    async def select(self, instance: Model) -> Model | None:
         pass
 
     @abc.abstractmethod
-    def update(self, instance: Model):
+    async def update(self, instance: Model):
         pass
 
     @abc.abstractmethod
-    def delete(self, instance_id: int | str):
+    async def delete(self, instance_id: int | str):
         pass
