@@ -1,6 +1,6 @@
 from hashlib import pbkdf2_hmac
 
-from src.server.config import SECRET_KEY, ENCRYPTION_ITER_COUNT
+from config import SECRET_KEY, ENCRYPTION_ITER_COUNT
 
 
 def encrypt(password: str):
