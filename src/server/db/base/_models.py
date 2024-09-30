@@ -67,8 +67,13 @@ class Model(abstract.Model):
             if type(value) is not field_type:
                 raise TypeError(f"Invalid type: '{type(value)}' for field '{field_name}' (type: ({field_type})")
 
-            self._data[field_name] = value
             setattr(self, field_name, value)
+
+    def __setattr__(self, key: str, value: typing.Any):
+        super().__setattr__(key, value)
+
+        if value:
+            self._data[key] = value
 
     def __eq__(self, other):
         if not isinstance(other, Model):
