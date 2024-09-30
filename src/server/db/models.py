@@ -6,6 +6,9 @@ class User(Model):
     email: str
     password: str
 
+    def __str__(self):
+        return f"<{type(self).__name__} '{self.email}'>"
+
 
 class Item(Model):
     id: int
