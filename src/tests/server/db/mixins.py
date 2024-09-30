@@ -1,5 +1,4 @@
 import asyncio
-import itertools
 import os
 
 import aiosqlite
