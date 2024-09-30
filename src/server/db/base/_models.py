@@ -10,7 +10,7 @@ class Model(abstract.Model):
 
     _data: dict[str, typing.Any]
 
-    class DoesNotExist(Exception):
+    class AlreadyExists(Exception):
         pass
 
     # TODO: Solve this mess of static methods (might need to create a separate instance type for this)
