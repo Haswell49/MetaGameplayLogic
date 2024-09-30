@@ -62,7 +62,7 @@ class Model(abstract.Model):
             value = data.get(field_name, field_type())
 
             if type(value) is not field_type:
-                raise TypeError(f"Invalid value: '{value}' for field '{field_name}' (type: ({field_type})")
+                raise TypeError(f"Invalid type: '{type(value)}' for field '{field_name}' (type: ({field_type})")
 
             self._data[field_name] = value
             setattr(self, field_name, value)
@@ -72,3 +72,5 @@ class Model(abstract.Model):
             return False
 
         return self._data == other._data
+
+    # TODO: Make a standard __repr__ realization for models
