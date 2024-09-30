@@ -15,12 +15,12 @@ class RegisterView(web.View):
         user = db.models.User(**data)
 
         try:
-            user = await register(self.request.app.db_mappers[db.models.User], user)
+            user_id = await register(self.request.app.db_mappers[db.models.User], user)
         except db.models.User.AlreadyExists:
             return web.HTTPConflict(body=f"User '{user}' already exists.")
 
         session = await get_session(self.request)
-        session["user_id"] = user.id
+        session["user_id"] = user_id
 
         return web.HTTPOk()
 

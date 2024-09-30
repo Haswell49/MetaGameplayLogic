@@ -13,6 +13,9 @@ class Model(abstract.Model):
     class AlreadyExists(Exception):
         pass
 
+    class DoesNotExist(Exception):
+        pass
+
     # TODO: Solve this mess of static methods (might need to create a separate instance type for this)
     @classmethod
     def get_table_name(cls):

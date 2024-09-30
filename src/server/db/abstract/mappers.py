@@ -9,7 +9,7 @@ class Mapper(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def create(self, instance: Model):
+    async def create(self, instance: Model) -> str | int:
         pass
 
     @abc.abstractmethod
