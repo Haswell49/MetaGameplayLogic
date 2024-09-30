@@ -5,9 +5,9 @@ from .. import abstract
 from .. import base
 
 
-def create_mappers(adapter: abstract.Adapter,
-                   mapper_type: type[abstract.Mapper],
-                   models: types.ModuleType) -> dict[type[abstract.Model], abstract.Mapper]:
+def create_mappers(adapter: abstract.AsyncAdapter,
+                   mapper_type: type[abstract.AsyncMapper],
+                   models: types.ModuleType) -> dict[type[abstract.Model], abstract.AsyncMapper]:
     result = dict()
 
     for model_name in vars(models):

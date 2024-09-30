@@ -4,8 +4,8 @@ import db
 
 
 class SQLApplication(web.Application):
-    def __init__(self, db_adapter: db.abstract.Adapter,
-                 db_mappers: dict[type[db.abstract.Model], db.abstract.Mapper],
+    def __init__(self, db_adapter: db.abstract.AsyncAdapter,
+                 db_mappers: dict[type[db.abstract.Model], db.abstract.AsyncMapper],
                  *args,
                  **kwargs):
         super().__init__(*args, **kwargs)

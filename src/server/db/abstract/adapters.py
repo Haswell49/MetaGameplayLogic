@@ -4,7 +4,7 @@ import typing
 from .formatters import SQLFormatter
 
 
-class Adapter(abc.ABC):
+class AsyncAdapter(abc.ABC):
     connection: typing.Any
 
     formatter: SQLFormatter

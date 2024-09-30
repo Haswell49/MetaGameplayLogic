@@ -3,12 +3,12 @@ import typing
 from .. import base, abstract
 
 
-class SQLiteAsyncMapper(abstract.Mapper):
-    adapter: abstract.Adapter
+class SQLiteAsyncMapper(abstract.AsyncMapper):
+    adapter: abstract.AsyncAdapter
 
     _model_type: typing.Type[base.Model]
 
-    def __init__(self, adapter: abstract.Adapter, model_type: type[base.Model]):
+    def __init__(self, adapter: abstract.AsyncAdapter, model_type: type[base.Model]):
         self.adapter = adapter
         self._model_type = model_type
 

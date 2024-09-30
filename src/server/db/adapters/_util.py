@@ -2,7 +2,7 @@ from .. import abstract
 
 
 async def create_sql_adapter(formatter_type: type[abstract.SQLFormatter],
-                             adapter_type: type[abstract.Adapter],
+                             adapter_type: type[abstract.AsyncAdapter],
                              db_config: dict):
     sql_formatter = formatter_type()
 

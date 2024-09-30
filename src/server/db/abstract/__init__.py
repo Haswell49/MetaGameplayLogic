@@ -1,4 +1,4 @@
 from .models import Model
-from .mappers import Mapper
-from .adapters import Adapter
+from .mappers import AsyncMapper
+from .adapters import AsyncAdapter
 from .formatters import SQLFormatter

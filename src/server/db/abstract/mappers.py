@@ -1,11 +1,11 @@
 import abc
 from .models import Model
-from .adapters import Adapter
+from .adapters import AsyncAdapter
 
 
-class Mapper(abc.ABC):
+class AsyncMapper(abc.ABC):
     @abc.abstractmethod
-    def __init__(self, adapter: Adapter, model_type: type[Model]):
+    def __init__(self, adapter: AsyncAdapter, model_type: type[Model]):
         pass
 
     @abc.abstractmethod

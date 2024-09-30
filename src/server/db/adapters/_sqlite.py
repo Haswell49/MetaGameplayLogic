@@ -6,7 +6,7 @@ from .. import abstract
 from ..formatters import SQLiteFormatter
 
 
-class SQLiteAsyncAdapter(abstract.Adapter):
+class SQLiteAsyncAdapter(abstract.AsyncAdapter):
     connection: aiosqlite.Connection
 
     formatter: SQLiteFormatter
