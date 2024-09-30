@@ -2,7 +2,9 @@ import db
 
 
 async def register(db_mapper: db.abstract.AsyncMapper, user: db.models.User) -> str | int:
-    _user = await db_mapper.select(user)
+    select_data = {key: value for key, value in user.data.items() if key != "password"}
+
+    _user = await db_mapper.select(db.models.User(**select_data))
 
     if _user:
         raise db.models.User.AlreadyExists(f"User: {user} already exists")

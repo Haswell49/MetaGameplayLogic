@@ -31,14 +31,15 @@ class LoginView(web.View):
 
         data["password"] = crypt.encrypt(data["password"])
 
-        user = await login(self.request.app.db_mappers[db.models.User],
-                           db.models.User(**data))
+        user = db.models.User(**data)
 
-        if not user:
-            del data["password"]
-            return web.HTTPForbidden(body=f"No user with credentials: {data}")
+        try:
+            user_id = await login(self.request.app.db_mappers[db.models.User],
+                                  user)
+        except db.models.User.DoesNotExist:
+            return web.HTTPForbidden(body=f"User not found: {user}")
 
         session = await get_session(self.request)
-        session["user_id"] = user.id
+        session["user_id"] = user_id
 
         return web.HTTPOk()
