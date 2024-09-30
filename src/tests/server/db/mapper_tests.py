@@ -3,7 +3,7 @@ import unittest
 
 import aiosqlite
 
-from src.server.db.adapters import SQLiteAsyncAdapter, RowNotFoundException
+from src.server.db.adapters import SQLiteAsyncAdapter
 from src.server.db.mappers import SQLiteAsyncMapper
 from src.server.db.models import Item
 from src.tests.server.db.mixins import SQLiteAsyncDBSetupMixin, SQLiteAsyncAdapterSetupMixin
@@ -43,8 +43,6 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         await self.mapper.create(item)
 
-        item = await self.mapper.select(id=0)
-
         test_item_values = await self.adapter.select(Item.get_table_name(), id=item.id)
 
         test_item_data = {key: value for key, value in zip(Item.get_fields(), test_item_values)}
@@ -57,8 +55,6 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
         item = Item(id=0, name="Battleship", price=200)
 
         await self.mapper.create(item)
-
-        item = await self.mapper.select(id=0)
 
         item.name = "SpeedBoat"
         item.price = 1000
@@ -80,9 +76,9 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
 
         await self.mapper.delete(0)
 
-        try:
-            await self.adapter.select(Item.get_table_name(), id=item.id)
-        except RowNotFoundException:
+        item = await self.adapter.select(Item.get_table_name(), id=item.id)
+
+        if not item:
             return
 
         self.fail("Item was not deleted.")

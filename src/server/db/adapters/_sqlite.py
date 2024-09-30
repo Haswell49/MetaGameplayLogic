@@ -2,9 +2,8 @@ import typing
 
 import aiosqlite
 
-from ._exceptions import RowNotFoundException
-from ..formatters import SQLiteFormatter
 from .. import abstract
+from ..formatters import SQLiteFormatter
 
 
 class SQLiteAsyncAdapter(abstract.Adapter):
@@ -20,12 +19,14 @@ class SQLiteAsyncAdapter(abstract.Adapter):
         self.connection = connection
         self.formatter = formatter
 
-    async def insert(self, table_name: str, data: dict) -> None:
+    async def insert(self, table_name: str, data: dict) -> str | int:
         query = self.formatter.insert(table_name, data)
 
-        await self.connection.execute(query)
+        cursor = await self.connection.execute(query)
 
         await self.connection.commit()
+
+        return cursor.lastrowid
 
     async def select(self, table_name: str, **filters) -> tuple:
         query = self.formatter.select(table_name, filters)
@@ -33,9 +34,6 @@ class SQLiteAsyncAdapter(abstract.Adapter):
         cursor = await self.connection.execute(query)
 
         data = await cursor.fetchone()
-
-        if not data:
-            raise RowNotFoundException(f"Row with parameters: {data} not found in table: {table_name}")
 
         return data
 
