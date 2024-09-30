@@ -3,7 +3,7 @@ from aiohttp_session import get_session
 
 import crypt
 import db
-from auth import login, register, UserAlreadyExists
+from auth import login, register
 
 
 class RegisterView(web.View):
@@ -16,8 +16,8 @@ class RegisterView(web.View):
 
         try:
             user = await register(self.request.app.db_mappers[db.models.User], user)
-        except UserAlreadyExists:
-            return web.HTTPConflict(f"User '{user}' already exists.")
+        except db.models.User.AlreadyExists:
+            return web.HTTPConflict(body=f"User '{user}' already exists.")
 
         session = await get_session(self.request)
         session["user_id"] = user.id
@@ -42,5 +42,3 @@ class LoginView(web.View):
         session["user_id"] = user.id
 
         return web.HTTPOk()
-
-
