@@ -1,4 +1,5 @@
 import typing
+from collections.abc import Iterable
 
 from .. import abstract
 
@@ -6,25 +7,34 @@ from .. import abstract
 # TODO: Add an base class for this class
 class SQLiteFormatter(abstract.SQLFormatter):
     def insert(self, table_name: str, data: dict):
-        str_columns = ", ".join(data.keys())
-        str_values = ", ".join(self._format_query_values(data.values()))
+        columns = self._sanitize_columns(data.items())
+        values = self._sanitize_values(data.values())
+
+        str_columns = ", ".join(columns)
+        str_values = ", ".join(values)
 
         return f"INSERT INTO {table_name} ({str_columns}) VALUES ({str_values});"
 
     def select(self, table_name: str, data: dict):
-        str_filters = " AND ".join(self._format_equations(data.items()))
+        columns = self._sanitize_columns(data.items())
+        values = self._sanitize_values(data.values())
+
+        str_filters = " AND ".join(self._format_items(columns, values, '='))
 
         return f"SELECT * FROM {table_name} WHERE {str_filters};"
 
     def update(self, table_name: str, data: dict):
         row_id = data["id"]
 
-        str_assignments = ", ".join(self._format_equations(data.items()))
+        columns = self._sanitize_columns(data.items())
+        values = self._sanitize_values(data.values())
+
+        str_assignments = ", ".join(self._format_items(columns, values, "="))
 
         return f"UPDATE {table_name} SET {str_assignments} WHERE id = {row_id};"
 
     def delete(self, table_name: str, item_id: typing.Any):
-        item_id = self._format_value(item_id)
+        item_id = self._sanitize(item_id)
 
         return f"DELETE FROM {table_name} WHERE id={item_id};"
 
@@ -33,19 +43,30 @@ class SQLiteFormatter(abstract.SQLFormatter):
 
         return f"CREATE TABLE {table_name} ({formatted_schema});)"
 
-    def _format_query_values(self, values: typing.Iterable):
-        for value in values:
-            yield self._format_value(value)
-
-    def _format_equations(self, items: typing.ItemsView[str, typing.Any]):
+    def _sanitize_columns(self, items: typing.ItemsView[str, typing.Any]):
         for key, value in items:
-            value = self._format_value(value)
-            yield f"{key}={value}"
+            if value is None:
+                continue
 
-    def _format_value(self, value: typing.Any):
-        if value is None:
-            return "NULL"
+            yield key
 
+    def _sanitize_values(self, values: Iterable):
+        for value in values:
+            if value is None:
+                continue
+
+            value = self._sanitize(value)
+
+            yield value
+
+    def _format_items(self,
+                      columns: typing.Iterable[str],
+                      values: typing.Iterable[typing.Any],
+                      separator: str):
+        for key, value in zip(columns, values):
+            yield f"{key}{separator}{value}"
+
+    def _sanitize(self, value: typing.Any):
         if isinstance(value, str):
             return f"'{value}'"
 
