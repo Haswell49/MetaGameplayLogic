@@ -18,7 +18,7 @@ class Item(Model):
 
 
 class Player(Model):
-    user_id: int
+    id: int
     nickname: str
     items: list[Item]
     balance: int

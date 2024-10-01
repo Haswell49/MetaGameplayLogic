@@ -6,9 +6,13 @@ from .. import abstract
 class Model(abstract.Model):
     # TODO: Add SQL type validation
 
+    PRIMARY_KEY_FIELD = "id"
+
     _table_name: str = ""
 
     _data: dict[str, typing.Any]
+
+    _bound: bool
 
     class AlreadyExists(Exception):
         pass
@@ -49,30 +53,29 @@ class Model(abstract.Model):
     def data(self) -> dict[str, typing.Any]:
         return self._data
 
-    def __init__(self, **kwargs):
+    @property
+    def bound(self) -> bool:
+        return self._bound
+
+    def __init__(self, bound=False, **kwargs):
         self._data = dict()
 
-        self._setup_fields(kwargs if kwargs else {})
+        self._bound = bound
+
+        self._setup_fields(kwargs)
 
     async def save(self):
         pass
 
     def _setup_fields(self, data: dict):
         for field_name, field_type in type(self).__annotations__.items():
-            if not self._is_data_field(field_name):
-                continue
-
-            value = data.get(field_name, field_type())
-
-            if type(value) is not field_type:
-                raise TypeError(f"Invalid type: '{type(value)}' for field '{field_name}' (type: ({field_type})")
-
-            setattr(self, field_name, value)
+            value = data.get(field_name, None)
+            self.__setattr__(field_name, value)
 
     def __setattr__(self, key: str, value: typing.Any):
         super().__setattr__(key, value)
 
-        if value:
+        if self._is_data_field(key):
             self._data[key] = value
 
     def __eq__(self, other):

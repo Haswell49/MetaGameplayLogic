@@ -43,6 +43,9 @@ class SQLiteFormatter(abstract.SQLFormatter):
             yield f"{key}={value}"
 
     def _format_value(self, value: typing.Any):
+        if value is None:
+            return "NULL"
+
         if isinstance(value, str):
             return f"'{value}'"
 

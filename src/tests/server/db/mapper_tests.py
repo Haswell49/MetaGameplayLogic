@@ -26,62 +26,58 @@ class SQLiteAsyncMapperTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAda
         asyncio.run(self._reset_tables())
 
     async def test_create(self):
-        item = Item(id=0, name="Battleship", price=200)
+        item_data = dict(id=0, name="Battleship", price=200)
 
-        await self.mapper.create(item)
+        instance = await self.mapper.create(**item_data)
 
-        test_item_values = await self.adapter.select(Item.get_table_name(), **item.data)
+        adapter_row = await self.adapter.select(Item.get_table_name(), {"id": instance.id})
 
-        test_item_data = {key: value for key, value in zip(Item.get_fields(), test_item_values)}
+        adapter_data = {key: value for key, value in zip(Item.get_fields(), adapter_row)}
 
-        test_item = Item(**test_item_data)
+        adapter_instance = Item(**adapter_data)
 
-        self.assertEqual(test_item, item)
+        self.assertEqual(adapter_instance, instance)
 
     async def test_select(self):
-        item = Item(id=0, name="Battleship", price=200)
+        mapper_data = dict(id=0, name="Battleship", price=200)
 
-        await self.mapper.create(item)
+        instance: Item = await self.mapper.create(**mapper_data)
 
-        test_item_values = await self.adapter.select(Item.get_table_name(), id=item.id)
+        adapter_row = await self.adapter.select(Item.get_table_name(), {"id": instance.id})
 
-        test_item_data = {key: value for key, value in zip(Item.get_fields(), test_item_values)}
+        adapter_data = {key: value for key, value in zip(Item.get_fields(), adapter_row)}
 
-        test_item = Item(**test_item_data)
+        adapter_instance = Item(**adapter_data)
 
-        self.assertEqual(test_item, item)
+        self.assertEqual(adapter_instance, instance)
 
     async def test_update(self):
-        item = Item(id=0, name="Battleship", price=200)
+        initial_item_data = dict(id=0, name="Battleship", price=200)
 
-        await self.mapper.create(item)
+        item = await self.mapper.create(**initial_item_data)
 
         item.name = "SpeedBoat"
         item.price = 1000
 
         await self.mapper.update(item)
 
-        test_item_values = await self.adapter.select(Item.get_table_name(), id=item.id)
+        updated_item_row = await self.adapter.select(Item.get_table_name(), {"id": item.id})
 
-        test_item_data = {key: value for key, value in zip(Item.get_fields(), test_item_values)}
-
-        test_item = Item(**test_item_data)
-
-        self.assertEqual(test_item, item)
+        self.assertEqual(tuple(item.data.values()), updated_item_row)
 
     async def test_delete(self):
-        item = Item(id=0, name="Battleship", price=200)
+        item_data = dict(id=0, name="Battleship", price=200)
 
-        await self.mapper.create(item)
+        item = await self.mapper.create(**item_data)
 
-        await self.mapper.delete(0)
+        item_id = item.id
 
-        item = await self.adapter.select(Item.get_table_name(), id=item.id)
+        await self.mapper.delete(item)
 
-        if not item:
-            return
+        item = await self.adapter.select(Item.get_table_name(), {"id": item_id})
 
-        self.fail("Item was not deleted.")
+        if item:
+            self.fail("Item was not deleted.")
 
 
 if __name__ == '__main__':

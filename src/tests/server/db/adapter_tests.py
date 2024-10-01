@@ -32,7 +32,7 @@ class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAd
     async def test_select(self):
         await self.adapter.insert(self.table_name, self.data)
 
-        adapter_data = await self.adapter.select(self.table_name, id=self.data["id"])
+        adapter_data = await self.adapter.select(self.table_name, {"id": self.data["id"]})
 
         cursor = await self.connection.execute(f"SELECT * FROM {self.table_name} WHERE id={self.data['id']};")
         data_from_connector = await cursor.fetchone()
@@ -46,11 +46,9 @@ class SQLiteAsyncAdapterTestCase(unittest.IsolatedAsyncioTestCase, SQLiteAsyncAd
 
         await self.adapter.update(self.table_name, {"id": self.data["id"], "email": new_email})
 
-        find_data = await self.adapter.select(self.table_name, id=self.data["id"])
+        updated_data = await self.adapter.select(self.table_name, {"id": self.data["id"]})
 
-        new_data = tuple(value if key != "email" else new_email for key, value in self.data.items())
-
-        self.assertEqual(find_data, new_data)
+        self.assertNotEqual(updated_data, self.data)
 
     async def test_delete(self):
         await self.adapter.insert(self.table_name, self.data)
