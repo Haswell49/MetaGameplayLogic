@@ -1,14 +1,15 @@
 import typing
 
 from .. import base, abstract
+from ..adapters import SQLiteAsyncAdapter
 
 
 class SQLiteAsyncMapper(abstract.AsyncMapper):
-    adapter: abstract.AsyncAdapter
+    adapter: SQLiteAsyncAdapter
 
     _model_type: typing.Type[base.Model]
 
-    def __init__(self, adapter: abstract.AsyncAdapter, model_type: type[base.Model]):
+    def __init__(self, adapter: SQLiteAsyncAdapter, model_type: type[base.Model]):
         self.adapter = adapter
         self._model_type = model_type
 
@@ -17,7 +18,7 @@ class SQLiteAsyncMapper(abstract.AsyncMapper):
 
         instance = self._model_type(bound=True, **data)
 
-        if "id" not in data:
+        if instance.id is None:
             instance.id = primary_key
 
         return instance
