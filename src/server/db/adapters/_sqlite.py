@@ -12,7 +12,7 @@ class SQLiteAsyncAdapter(abstract.AsyncAdapter):
     formatter: SQLiteFormatter
 
     @staticmethod
-    async def create_connection(db_config: dict):
+    async def create_connection(db_config: dict) -> aiosqlite.Connection:
         return await aiosqlite.connect(**db_config)
 
     def __init__(self, connection: aiosqlite.Connection, formatter: SQLiteFormatter):
@@ -28,8 +28,8 @@ class SQLiteAsyncAdapter(abstract.AsyncAdapter):
 
         return cursor.lastrowid
 
-    async def select(self, table_name: str, **filters) -> tuple:
-        query = self.formatter.select(table_name, filters)
+    async def select(self, table_name: str, data: dict) -> tuple:
+        query = self.formatter.select(table_name, data)
 
         cursor = await self.connection.execute(query)
 
@@ -46,8 +46,8 @@ class SQLiteAsyncAdapter(abstract.AsyncAdapter):
 
         return await cursor.fetchone()
 
-    async def delete(self, table_name: str, item_id: typing.Any) -> None:
-        query = self.formatter.delete(table_name, item_id)
+    async def delete(self, table_name: str, pk: typing.Any) -> None:
+        query = self.formatter.delete(table_name, pk)
 
         await self.connection.execute(query)
 

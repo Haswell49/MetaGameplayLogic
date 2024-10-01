@@ -9,11 +9,11 @@ class AsyncMapper(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def create(self, instance: Model) -> str | int:
+    async def create(self, **data) -> Model:
         pass
 
     @abc.abstractmethod
-    async def select(self, instance: Model) -> Model | None:
+    async def select(self, **data) -> Model | None:
         pass
 
     @abc.abstractmethod
@@ -21,5 +21,5 @@ class AsyncMapper(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def delete(self, instance_id: int | str):
+    async def delete(self, instance: Model):
         pass

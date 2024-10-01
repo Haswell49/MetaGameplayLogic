@@ -23,7 +23,7 @@ class AsyncAdapter(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def select(self, table_name: str, **filters) -> tuple:
+    async def select(self, table_name: str, data: dict) -> tuple:
         pass
 
     @abc.abstractmethod
@@ -31,5 +31,5 @@ class AsyncAdapter(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def delete(self, table_name: str, item_id: typing.Any) -> None:
+    async def delete(self, table_name: str, pk: typing.Any) -> None:
         pass

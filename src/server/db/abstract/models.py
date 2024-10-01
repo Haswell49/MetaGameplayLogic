@@ -7,7 +7,3 @@ class Model(abc.ABC):
     @abc.abstractmethod
     def data(self) -> dict[str, typing.Any]:
         pass
-
-    @abc.abstractmethod
-    async def save(self):
-        pass
