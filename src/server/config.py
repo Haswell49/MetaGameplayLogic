@@ -1,18 +1,25 @@
+import os
+
+from dotenv import load_dotenv
+
 from db.adapters import SQLiteAsyncAdapter
 from db.formatters import SQLiteFormatter
 from db.mappers import SQLiteAsyncMapper
 
-SECRET_KEY = b"ec5336a3f68b3518940bc211a7e5e45b5793f55632e20de92547d63ba4864014"
+load_dotenv(".env.shared")
+load_dotenv(".env.sensitive")
 
-COOKIES_SECRET_KEY = b"SGVsbG8sIFdvcmxkITIxNXQzMmdhYXMy"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-ENCRYPTION_ITER_COUNT = 20000
+COOKIES_SECRET_KEY = os.environ.get("COOKIES_SECRET_KEY")
 
-SERVER_HOST = "127.0.0.1"
-SERVER_PORT = 8000
+ENCRYPTION_ITER_COUNT = os.environ.get("ENCRYPTION_ITER_COUNT")
+
+SERVER_HOST = os.environ.get("SERVER_HOST")
+SERVER_PORT = os.environ.get("SERVER_PORT")
 
 DB_CONFIG = {
-    "database": "db.sqlite3"
+    "database": os.environ.get("DB_NAME")
 }
 
 SQL_ADAPTER_TYPE = SQLiteAsyncAdapter
