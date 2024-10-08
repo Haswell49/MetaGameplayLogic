@@ -64,9 +64,6 @@ class Model(abstract.Model):
 
         self._setup_fields(kwargs)
 
-    async def save(self):
-        pass
-
     def _setup_fields(self, data: dict):
         for field_name, field_type in type(self).__annotations__.items():
             value = data.get(field_name, None)
@@ -77,6 +74,10 @@ class Model(abstract.Model):
 
         if self._is_data_field(key):
             self._data[key] = value
+
+    def __str__(self):
+        model_id = {self.id if hasattr(self, "id") else ""}
+        return f"<{self.__class__.__name__} ({model_id})>"
 
     def __eq__(self, other):
         if not isinstance(other, Model):
