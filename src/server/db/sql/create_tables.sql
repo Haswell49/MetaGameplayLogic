@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS players
 (
-    user_id  INTEGER PRIMARY KEY,
+    id  INTEGER PRIMARY KEY,
     nickname TEXT    NOT NULL UNIQUE,
     balance  INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS items
@@ -19,5 +19,5 @@ CREATE TABLE IF NOT EXISTS items
     name     TEXT    NOT NULL UNIQUE,
     price    INTEGER NOT NULL,
     owner_id INTEGER,
-    FOREIGN KEY (owner_id) REFERENCES players (user_id)
+    FOREIGN KEY (owner_id) REFERENCES players (id)
 );

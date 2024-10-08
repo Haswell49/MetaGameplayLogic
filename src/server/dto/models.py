@@ -7,13 +7,14 @@ class User(base.BaseUser):
 
 
 class Item(pydantic.BaseModel):
-    id: int
+    id: int | None = None
     name: str
     price: int
     owner_id: int | None = None
 
 
 class Player(pydantic.BaseModel):
-    user_id: int
+    id: int | None = None
     nickname: str
-    items: list[Item]
+    items: list[Item] = []
+    balance: int = 0
